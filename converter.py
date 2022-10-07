@@ -77,9 +77,3 @@ class Converter:
         """
         with open(output_path, 'w') as out_file:
            out_file.write(json_data)
-        
-
-
-json_data = Converter().convert_csv_to_json("/Users/nerdthejohn/Downloads/sample2.csv")
-Converter().save_json_to_path(json_data, "/Users/nerdthejohn/Downloads/res.json")
-Converter().convert_json_to_xlsx("/Users/nerdthejohn/Downloads/res.json", "/Users/nerdthejohn/Downloads/res.xlsx")
