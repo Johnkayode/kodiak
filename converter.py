@@ -1,4 +1,3 @@
-import os
 import csv
 import json
 import pyexcel
@@ -27,7 +26,6 @@ class Converter:
         records = pyexcel.iget_records(file_name=file_path)
         data = []
         for record in records:
-            print(dict(record))
             data.append(dict(record))
         return json.dumps(data, ensure_ascii=False, indent=4, cls=JSONEncoder)
 
