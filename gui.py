@@ -38,13 +38,6 @@ class Application(QApplication):
         self.download_btn.clicked.connect(self.save_file)
 
         layout = QGridLayout()
-        # layout.addWidget(Label('File Format:'))
-        # layout.addWidget(self.file_format_combo_box)
-        # layout.addWidget(Label('Header (Set if first row is header)'))
-        # layout.addWidget(self.header_check_box)
-        # layout.addWidget(self.select_btn)
-        # layout.addWidget(self.text_box)
-        # layout.addWidget(self.download_btn)
         grid = (
             ((0, 5, Label('File Format:')), (5, 7, self.file_format_combo_box)),
             ((0, 5, Label('Header (Set if first row is header)')), (5, 7, self.header_check_box)),
