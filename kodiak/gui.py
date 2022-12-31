@@ -1,8 +1,8 @@
 import json
 from PyQt6.QtWidgets import *
 
-from components import Label, FileFormatComboBox, FileDialog, JSONDisplayBox, HeaderCheckBox
-from converter import Converter
+from kodiak.components import Label, FileFormatComboBox, FileDialog, JSONDisplayBox, HeaderCheckBox
+from kodiak.converter import Converter
 
 class Application(QApplication):
     def __init__(self):

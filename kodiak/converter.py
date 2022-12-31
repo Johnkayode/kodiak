@@ -4,7 +4,7 @@ import pyexcel
 
 from pathlib import Path
 from typing import Union, Any
-from utils import JSONEncoder
+from kodiak.utils import JSONEncoder
 
 
 
