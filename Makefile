@@ -20,7 +20,7 @@ bundle_mac: dist/Kodiak.app codesign_all_mac zip_mac notarize_zip staple_app_mac
 
 UNAME_S := $(shell uname -s)
 
-
+dist/Buzz dist/Buzz.app: pyinstaller --noconfirm Buzz.spec
 
 version:
 	poetry version ${version}
@@ -45,7 +45,7 @@ codesign_all_mac:
 	make codesign_verify
 
 codesign_mac:
-	codesign --deep --force --options=runtime --entitlements ./entitlements.plist --sign "$$BUZZ_CODESIGN_IDENTITY" --timestamp ${path}
+	codesign --deep --force --options=runtime --entitlements ./entitlements.plist --sign "$$KODIAK_CODESIGN_IDENTITY" --timestamp ${path}
 
 zip_mac:
 	ditto -c -k --keepParent "${mac_app_path}" "${mac_zip_path}"
