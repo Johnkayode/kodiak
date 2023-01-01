@@ -56,7 +56,7 @@ jobs:
         with:
           name: Kodiak-${{ runner.os }}
           path: |
-            build/Kodiak*.bin
-            build/Kodiak*.exe
-            build/Kodiak*.app/**/*
+            build/*.exe
+            build/*.bin
+            build/*.app/**/*
  
