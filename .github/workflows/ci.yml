@@ -20,8 +20,23 @@ jobs:
       matrix:
         include:
           - os: macos-latest
+            TARGET: macos
+            CMD_BUILD: >
+                pyinstaller -F -w -n kodiak -i assets/kodiak.icns main.py &&
+                cd dist/ &&
+                zip -r9 kodiak kodiak.app/
+            OUT_FILE_NAME: kodiak.zip
+            ASSET_MIME: application/zip
           - os: windows-latest
+            TARGET: windows
+            CMD_BUILD: pyinstaller -F -w -n kodiak -i assets/kodiak.ico main.py
+            OUT_FILE_NAME: kodiak.exe
+            ASSET_MIME: application/vnd.microsoft.portable-executable
           - os: ubuntu-latest
+            TARGET: linux
+            CMD_BUILD: pyinstaller -F -w -n kodiak -i assets/kodiak.ico main.py
+            OUT_FILE_NAME: kodiak.exe
+            ASSET_MIME: application/vnd.microsoft.portable-executable
     steps:
       - uses: actions/checkout@v3
         with:
@@ -46,11 +61,8 @@ jobs:
       - name: Install dependencies
         run: poetry config experimental.new-installer false && poetry install
 
-      - name: Build Executable
-        uses: Nuitka/Nuitka-Action@v0.4
-        with:
-          script-name: main.py
-          onefile: true
+      - name: Build Executable for ${{matrix.TARGET}}
+        run: ${{matrix.CMD_BUILD}}
 
       - uses: actions/upload-artifact@v3
         with:
@@ -59,4 +71,4 @@ jobs:
             build/*.exe
             build/*.bin
             build/*.app/**/*
- 
+  
