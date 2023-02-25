@@ -25,14 +25,22 @@ To run `Kodiak` locally on your machine, first install [Poetry](https://python-p
 Then:
 1. Clone the repository  
 
-    ```git clone https://github.com/Johnkayode/kodiak```
+    ```shell
+    git clone https://github.com/Johnkayode/kodiak
+    ```
 2. Install dependencies  
 
-    ```poetry install```
+    ```shell
+    poetry install
+    ```
 3. Run the app  
 
-    ```poetry run python main.py```  
+    ```shell
+    poetry run python main.py
+    ```  
 
    or build the app  
 
-    ```poetry run pyinstaller --windowed --noconfirm main.py```
+    ```shell
+    poetry run pyinstaller --windowed --noconfirm main.py
+    ```
