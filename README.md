@@ -20,13 +20,19 @@ Install the `.exe`, `.tar.gz` and `.dmg` files for Windows, Linux and Mac OSes r
 - Copy or download the JSON data.
 
 ## Build/Run
-To run Kodiak locally on your machine, first install [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer).
+To run `Kodiak` locally on your machine, first install [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer).  
+
 Then:
-1. Clone the repository
+1. Clone the repository  
+
     ```git clone https://github.com/Johnkayode/kodiak```
-2. Install dependencies
+2. Install dependencies  
+
     ```poetry install```
-3. Run the app
-    ```poetry run python main.py```
-   or build the app
+3. Run the app  
+
+    ```poetry run python main.py```  
+
+   or build the app  
+
     ```poetry run pyinstaller --windowed --noconfirm main.py```
