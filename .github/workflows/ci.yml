@@ -8,6 +8,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
+        extension: [exe, dmg, tar.gz]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -23,42 +29,39 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build Windows executable
-        run: pyinstaller --name "Kodiak" --onefile --windowed --icon=assets/kodiak.ico main.py
+        run: pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico main.py mv dist/kodiak dist/kodiak.${{ matrix.extension }}
         if: matrix.os == 'windows-latest'
 
       - name: Build Linux executable
-        run: pyinstaller --name "Kodiak" --onefile --windowed --icon=assets/kodiak.ico main.py
+        run: pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico main.py mv dist/kodiak dist/kodiak.${{ matrix.extension }}
         if: matrix.os == 'ubuntu-latest'
 
       - name: Build Mac executable
-        run: pyinstaller --name "Kodiak" --onefile --windowed --icon=assets/kodiak.icns main.py
+        run: pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.icns main.py mv dist/kodiak dist/kodiak.${{ matrix.extension }}
         if: matrix.os == 'macos-latest'
       
-      - name: Create Release
+      - name: Create release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1.0
-          release_name: Release v1.0
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           body: |
-            Release v1.0
-            -------------
-            Add release notes or description here.
+            Release ${{ github.ref }}
           draft: false
           prerelease: false
 
-      - name: Upload Executable
+      - name: Upload executable
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/kodiak
-          asset_name: kodiak
+          asset_path: dist/kodiak.${{ matrix.extension }}
+          asset_name: kodiak.${{ matrix.extension }}
           asset_content_type: application/octet-stream
 
-    strategy:
-      matrix:
-        os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
+    
  
