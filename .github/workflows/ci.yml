@@ -1,105 +1,40 @@
----
-name: CI
+name: Build Executables
+
 on:
   push:
     branches:
       - main
-    tags:
-      - '*'
-  pull_request:
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
 
 jobs:
-
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos-latest
-          - os: windows-latest
-          - os: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10.7'
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Install Poetry Action
-        uses: snok/install-poetry@v1.3.1
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}-2
-
-      - uses: FedericoCarboni/setup-ffmpeg@v1
-        id: setup-ffmpeg
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          python-version: 3.x
 
       - name: Install dependencies
-        run: poetry config experimental.new-installer false && poetry install
-
-      - name: Bundle
         run: |
-          if [ "$RUNNER_OS" == "macOS" ]; then
-            brew install create-dmg
-            poetry run make bundle_mac
-          elif [ "$RUNNER_OS" == "Windows" ]; then
-            poetry run make bundle_windows
-          elif [ "$RUNNER_OS" == "Linux" ]; then
-            poetry run make bundle_linux
-          fi
-        shell: bash
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: Kodiak-${{ runner.os }}
-          path: |
-            dist/Kodiak*-windows.tar.gz
-            dist/Kodiak*-windows.exe
-            dist/Kodiak*-mac.dmg
-            dist/Kodiak*-unix.tar.gz
-  release:
-    runs-on: ${{ matrix.os }}
+      - name: Build Windows executable
+        run: pyinstaller --onefile --windowed --icon=assets/kodiak.ico main.py
+        if: matrix.os == 'windows-latest'
+
+      - name: Build Linux executable
+        run: pyinstaller --onefile --windowed --icon=assets/kodiak.ico main.py
+        if: matrix.os == 'ubuntu-latest'
+
+      - name: Build Mac executable
+        run: pyinstaller --onefile --windowed --icon=assets/kodiak.icns main.py
+        if: matrix.os == 'macos-latest'
+
     strategy:
-      fail-fast: false
       matrix:
-        include:
-          - os: macos-latest
-          - os: windows-latest
-    needs: [ build, test ]
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-      - uses: actions/download-artifact@v3
-        with:
-          name: Kodiak-${{ runner.os }}
-      - name: Install Poetry Action
-        uses: snok/install-poetry@v1.3.1
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            Kodiak*-windows.tar.gz
-            Kodiak*-unix.tar.gz
-            Kodiak*-windows.exe
-            Kodiak*-mac.dmg
+        os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
  
