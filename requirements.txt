@@ -1,6 +1,8 @@
+altgraph==0.17.3
 chardet==5.0.0
 et-xmlfile==1.1.0
 lml==0.1.0
+macholib==1.16.2
 openpyxl==3.0.10
 packaging==21.3
 ply==3.11
@@ -8,6 +10,8 @@ pyexcel==0.7.0
 pyexcel-io==0.6.6
 pyexcel-xls==0.7.0
 pyexcel-xlsx==0.6.0
+pyinstaller==5.8.0
+pyinstaller-hooks-contrib==2023.0
 pyparsing==3.0.9
 PyQt6==6.4.0
 PyQt6-Qt6==6.4.0
