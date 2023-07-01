@@ -30,10 +30,10 @@ jobs:
       - name: Build Windows executable
         run: |
           pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico main.py 
-          mv dist/kodiak.exe dist/kodiak.exe
-          mkdir dist/kodiak
-          cp -r dist/kodiak.exe dist/kodiak/
-          cp -r assets dist/kodiak/
+          # mv dist/kodiak.exe dist/kodiak.exe
+          # mkdir dist/kodiak
+          # cp -r dist/kodiak.exe dist/kodiak/
+          # cp -r assets dist/kodiak/
         if: matrix.os == 'windows-latest'
          
 
@@ -100,19 +100,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/kodiak
+          asset_path: dist/kodiak.dmg
           asset_name: kodiak.dmg
           asset_content_type: application/x-dmg
 
-      - name: Upload Windows executable
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/kodiak
-          asset_name: kodiak.exe
-          asset_content_type: application/x-msdownload
+      # - name: Upload Windows executable
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: dist/kodiak.exe
+      #     asset_name: kodiak.exe
+      #     asset_content_type: application/x-msdownload
 
 
      
