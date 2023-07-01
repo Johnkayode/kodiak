@@ -56,7 +56,7 @@ jobs:
             Add release notes or description here.
           draft: false
           prerelease: false
-        if: matrix.os == matrix.os[0] && matrix.node == matrix.node[0]
+        if: "!steps.create_release.outputs.upload_url"
 
       - name: Upload Executable
         uses: actions/upload-release-asset@v1
