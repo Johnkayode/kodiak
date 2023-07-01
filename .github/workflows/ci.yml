@@ -39,38 +39,53 @@ jobs:
         run: pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.icns main.py
         if: matrix.os == 'macos-latest'
       
-      - name: Check if Release Already Exists
-        id: check_release
-        uses: actions/github-script@v4
-        with:
-          script: |
-            const { data: releases } = await github.repos.listReleases({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              per_page: 100
-            });
-            const releaseExists = releases.find(r => r.tag_name === '${{ github.sha }}');
-            console.log(releaseExists);
-            console.log(releaseExists ? releaseExists.id : '');
-            console.log(releaseExists ? 'true' : 'false');
-            core.setOutput('release_id', releaseExists ? releaseExists.id : '');
-      
-      - name: Create release
+      # - name: Create release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: v1
+      #     release_name: Release v1
+      #     body: |
+      #       Release v1
+      #        -------------
+      #       Add release notes or description here.
+      #     draft: false
+      #     prerelease: false
+
+      # - name: Upload Executable
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: |
+      #       ./dist/kodiak
+      #     asset_name: kodiak.${{ matrix.os == 'macos-latest' && 'dmg' || 'exe' }}
+      #     asset_content_type: ${{ matrix.os == 'macos-latest' && 'application/x-dmg' || 'application/x-msdownload' }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1
-          release_name: Release v1
+          tag_name: v1.0
+          release_name: Release v1.0
           body: |
-            Release v1
-             -------------
-            Add release notes or description here.
+            Release v1.0
+            -------------
+            Kodiak.
           draft: false
           prerelease: false
 
-      - name: Upload Executable
+      - name: Upload macOS executable
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -78,8 +93,19 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: |
             ./dist/kodiak
-          asset_name: kodiak.${{ matrix.os == 'macos-latest' && 'dmg' || 'exe' }}
-          asset_content_type: ${{ matrix.os == 'macos-latest' && 'application/x-dmg' || 'application/x-msdownload' }}
+          asset_name: kodiak.dmg
+          asset_content_type: application/x-dmg
+
+      - name: Upload Windows executable
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: |
+            ./dist/kodiak
+          asset_name: kodiak.exe
+          asset_content_type: application/x-msdownload
 
 
      
