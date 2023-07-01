@@ -30,10 +30,6 @@ jobs:
       - name: Build Windows executable
         run: |
           pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico main.py 
-          # mv ./dist/kodiak/kodiak.exe dist/kodiak.exe
-          # mkdir dist/kodiak
-          # cp -r dist/kodiak.exe dist/kodiak/
-          # cp -r assets dist/kodiak/
         if: matrix.os == 'windows-latest'
          
 
@@ -44,65 +40,64 @@ jobs:
       - name: Build Mac executable
         run: |
           pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.icns main.py
-          mv ./dist/kodiak/kodiak.app dist/kodiak
-          hdiutil create -volname "kodiak" -srcfolder dist/kodiak -ov -format UDZO dist/kodiak.dmg
         if: matrix.os == 'macos-latest'
       
-      # - name: Create release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: v1
-      #     release_name: Release v1
-      #     body: |
-      #       Release v1
-      #        -------------
-      #       Add release notes or description here.
-      #     draft: false
-      #     prerelease: false
-
-      # - name: Upload Executable
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: |
-      #       ./dist/kodiak
-      #     asset_name: kodiak.${{ matrix.os == 'macos-latest' && 'dmg' || 'exe' }}
-      #     asset_content_type: ${{ matrix.os == 'macos-latest' && 'application/x-dmg' || 'application/x-msdownload' }}
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Create Release
+      - name: Create release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1.0
-          release_name: Release v1.0
+          tag_name: v1
+          release_name: Release v1
           body: |
-            Release v1.0
-            -------------
-            Kodiak.
+            Release v1
+             -------------
+            Add release notes or description here.
           draft: false
           prerelease: false
+        if: matrix.os == matrix.os[0] && matrix.node == matrix.node[0]
 
-      - name: Upload macOS executable
+      - name: Upload Executable
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/kodiak.dmg
-          asset_name: kodiak.dmg
-          asset_content_type: application/x-dmg
+          asset_path: |
+            ./dist/kodiak
+          asset_name: kodiak.${{ matrix.os == 'macos-latest' && 'dmg' || 'exe' }}
+          asset_content_type: ${{ matrix.os == 'macos-latest' && 'application/x-dmg' || 'application/x-msdownload' }}
+
+  # release:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Create Release
+  #       id: create_release
+  #       uses: actions/create-release@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         tag_name: v1.0
+  #         release_name: Release v1.0
+  #         body: |
+  #           Release v1.0
+  #           -------------
+  #           Kodiak.
+  #         draft: false
+  #         prerelease: false
+
+  #     - name: Upload macOS executable
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ steps.create_release.outputs.upload_url }}
+  #         asset_path: dist/kodiak.dmg
+  #         asset_name: kodiak.dmg
+  #         asset_content_type: application/x-dmg
 
       # - name: Upload Windows executable
       #   uses: actions/upload-release-asset@v1
