@@ -91,8 +91,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: |
-            ./dist/kodiak
+          asset_path: dist/kodiak.dmg
           asset_name: kodiak.dmg
           asset_content_type: application/x-dmg
 
@@ -102,8 +101,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: |
-            ./dist/kodiak
+          asset_path: dist/kodiak.exe
           asset_name: kodiak.exe
           asset_content_type: application/x-msdownload
 
