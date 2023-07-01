@@ -30,7 +30,7 @@ jobs:
       - name: Build Windows executable
         run: |
           pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico main.py 
-          # mv dist/kodiak.exe dist/kodiak.exe
+          # mv ./dist/kodiak/kodiak.exe dist/kodiak.exe
           # mkdir dist/kodiak
           # cp -r dist/kodiak.exe dist/kodiak/
           # cp -r assets dist/kodiak/
@@ -44,7 +44,7 @@ jobs:
       - name: Build Mac executable
         run: |
           pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.icns main.py
-          mv dist/kodiak.app dist/kodiak
+          mv ./dist/kodiak/kodiak.app dist/kodiak
           hdiutil create -volname "kodiak" -srcfolder dist/kodiak -ov -format UDZO dist/kodiak.dmg
         if: matrix.os == 'macos-latest'
       
