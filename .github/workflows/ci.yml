@@ -60,7 +60,7 @@ jobs:
 
 
   build_and_upload_windows:
-    name: Build and Upload Windows exeecutable
+    name: Build and Upload Windows executable
     runs-on: windows-latest
     needs: create_draft_release
     steps:
@@ -88,7 +88,7 @@ jobs:
         with:
           upload_url: ${{ needs.create_draft_release.outputs.upload_url }}
           asset_path: |
-            dist/kodiak
+            dist/kodiak.exe
           asset_name: kodiak.exe
           asset_content_type: application/x-msdownload
      
