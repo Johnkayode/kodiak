@@ -6,13 +6,25 @@ on:
       - main
 
 jobs:
-  build:
+  create_draft_release:
+    name: Create Draft Release
     runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          draft: true
 
-    strategy:
-      matrix:
-        os: ['windows-latest','macos-latest']
 
+  build_and_upload_mac:
+    name: Build and Upload Mac executable
+    runs-on: macos-latest
+    needs: create_draft_release
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -27,89 +39,58 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Build Windows executable
-        run: |
-          pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico main.py 
-        if: matrix.os == 'windows-latest'
-         
-
       # - name: Build Linux executable
       #   run: pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico main.py 
       #   if: matrix.os == 'ubuntu-latest'
 
-      - name: Build Mac executable
+      - name: Build Executable
         run: |
           pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.icns main.py
-        if: matrix.os == 'macos-latest'
-      
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v1
-          release_name: Release v1
-          body: |
-            Release v1
-             -------------
-            Add release notes or description here.
-          draft: false
-          prerelease: false
-        if: "!steps.create_release.outputs.upload_url"
-
+        
       - name: Upload Executable
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ needs.create_draft_release.outputs.upload_url }}
           asset_path: |
             ./dist/kodiak
-          asset_name: kodiak.${{ matrix.os == 'macos-latest' && 'dmg' || 'exe' }}
-          asset_content_type: ${{ matrix.os == 'macos-latest' && 'application/x-dmg' || 'application/x-msdownload' }}
-
-  # release:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Create Release
-  #       id: create_release
-  #       uses: actions/create-release@v1
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         tag_name: v1.0
-  #         release_name: Release v1.0
-  #         body: |
-  #           Release v1.0
-  #           -------------
-  #           Kodiak.
-  #         draft: false
-  #         prerelease: false
-
-  #     - name: Upload macOS executable
-  #       uses: actions/upload-release-asset@v1
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         upload_url: ${{ steps.create_release.outputs.upload_url }}
-  #         asset_path: dist/kodiak.dmg
-  #         asset_name: kodiak.dmg
-  #         asset_content_type: application/x-dmg
-
-      # - name: Upload Windows executable
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: dist/kodiak.exe
-      #     asset_name: kodiak.exe
-      #     asset_content_type: application/x-msdownload
+          asset_name: kodiak.dmg
+          asset_content_type: application/x-dmg
 
 
+  build_and_upload_windows:
+    name: Build and Upload Windows exeecutable
+    runs-on: windows-latest
+    needs: create_draft_release
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build Executable
+        run: |
+          pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico main.py 
+      
+      - name: Upload Executable
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_draft_release.outputs.upload_url }}
+          asset_path: |
+            ./dist/kodiak
+          asset_name: kodiak.exe
+          asset_content_type: application/x-msdownload
      
 
     
