@@ -88,7 +88,7 @@ jobs:
         with:
           upload_url: ${{ needs.create_draft_release.outputs.upload_url }}
           asset_path: |
-            ./dist/kodiak
+            dist/kodiak
           asset_name: kodiak.exe
           asset_content_type: application/x-msdownload
      
