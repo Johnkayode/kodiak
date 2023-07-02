@@ -1,6 +1,7 @@
 env/
 .venv/
+.dist/
 __pycache__/
 build/
 dist/
-release.yml
+

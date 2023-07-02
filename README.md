@@ -11,7 +11,7 @@ Easily convert Excel/CSV data to JSON format.
 
 ## Installation
 To install Kodiak, download the latest version for your operating system. It is available on Mac, Windows, and Linux.
-Install the `.exe`, `.tar.gz` and `.dmg` files for Windows, Linux and Mac OSes respectively.
+Install the `.exe`, `.deb` and `.dmg` files for Windows, Linux and Mac OSes respectively.
 
 ## How To Use
 - Select the source file format (Excel/CSV).
@@ -31,16 +31,16 @@ Then:
 2. Install dependencies  
 
     ```shell
-    poetry install
+    pip install -r requirements.txt
     ```
 3. Run the app  
 
     ```shell
-    poetry run python main.py
+    python main.py
     ```  
 
    or build the app  
 
     ```shell
-    poetry run pyinstaller --windowed --noconfirm main.py
+    pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico --noconfirm main.py
     ```
