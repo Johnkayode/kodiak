@@ -111,6 +111,15 @@ jobs:
         run: |
           pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico --hidden-import pyexcel_io.writers --hidden-import pyexcel_io.readers --hidden-import pyexcel_io.database.importers.django --hidden-import pyexcel_io.database.importers.sqlalchemy --hidden-import pyexcel_io.database.exporters.django --hidden-import pyexcel_io.database.exporters.sqlalchemy --hidden-import pyexcel_xlsx --hidden-import pyexcel_xlsx.xlsxr --hidden-import pyexcel_xlsx.xlsxw --hidden-import pyexcel_xls --hidden-import pyexcel_xls.xlsr --hidden-import pyexcel_xls.xlsw main.py
         
+      - name: Prepare Debian package structure
+        run: |
+          mkdir -p dist/DEBIAN
+          echo "Package: kodiak" >> dist/DEBIAN/control
+          echo "Version: 1.0" >> dist/DEBIAN/control
+          echo "Architecture: amd64" >> dist/DEBIAN/control
+          echo "Maintainer: John Shodipo <newtonjohn043@gmail.com>" >> dist/DEBIAN/control
+          echo "Description: Kodiak" >> dist/DEBIAN/control
+      
       - name: Build Debian package
         run: |
           sudo apt-get update
