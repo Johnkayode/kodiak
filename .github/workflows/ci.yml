@@ -39,13 +39,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # - name: Build Linux executable
-      #   run: pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico main.py 
-      #   if: matrix.os == 'ubuntu-latest'
-
       - name: Build Executable
         run: |
-          pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.icns --onefile --hidden-import pyexcel_io.writers --hidden-import pyexcel_io.readers --hidden-import pyexcel_io.database.importers.django --hidden-import pyexcel_io.database.importers.sqlalchemy --hidden-import pyexcel_io.database.exporters.django --hidden-import pyexcel_io.database.exporters.sqlalchemy --hidden-import pyexcel_xlsx --hidden-import pyexcel_xlsx.xlsxr --hidden-import pyexcel_xlsx.xlsxw --hidden-import pyexcel_xls --hidden-import pyexcel_xls.xlsr --hidden-import pyexcel_xls.xlsw main.py
+          pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.icns --hidden-import pyexcel_io.writers --hidden-import pyexcel_io.readers --hidden-import pyexcel_io.database.importers.django --hidden-import pyexcel_io.database.importers.sqlalchemy --hidden-import pyexcel_io.database.exporters.django --hidden-import pyexcel_io.database.exporters.sqlalchemy --hidden-import pyexcel_xlsx --hidden-import pyexcel_xlsx.xlsxr --hidden-import pyexcel_xlsx.xlsxw --hidden-import pyexcel_xls --hidden-import pyexcel_xls.xlsr --hidden-import pyexcel_xls.xlsw main.py
         
       - name: Upload Executable
         uses: actions/upload-release-asset@v1
@@ -79,7 +75,7 @@ jobs:
 
       - name: Build Executable
         run: |
-          pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico --onefile --hidden-import pyexcel_io.writers --hidden-import pyexcel_io.readers --hidden-import pyexcel_io.database.importers.django --hidden-import pyexcel_io.database.importers.sqlalchemy --hidden-import pyexcel_io.database.exporters.django --hidden-import pyexcel_io.database.exporters.sqlalchemy --hidden-import pyexcel_xlsx --hidden-import pyexcel_xlsx.xlsxr --hidden-import pyexcel_xlsx.xlsxw --hidden-import pyexcel_xls --hidden-import pyexcel_xls.xlsr --hidden-import pyexcel_xls.xlsw main.py 
+          pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico --hidden-import pyexcel_io.writers --hidden-import pyexcel_io.readers --hidden-import pyexcel_io.database.importers.django --hidden-import pyexcel_io.database.importers.sqlalchemy --hidden-import pyexcel_io.database.exporters.django --hidden-import pyexcel_io.database.exporters.sqlalchemy --hidden-import pyexcel_xlsx --hidden-import pyexcel_xlsx.xlsxr --hidden-import pyexcel_xlsx.xlsxw --hidden-import pyexcel_xls --hidden-import pyexcel_xls.xlsr --hidden-import pyexcel_xls.xlsw main.py 
       
       - name: Upload Executable
         uses: actions/upload-release-asset@v1
@@ -93,5 +89,41 @@ jobs:
           asset_content_type: application/x-msdownload
      
 
-    
+  build_and_upload_linux:
+    name: Build and Upload Linux executable
+    runs-on: ubuntu-latest
+    needs: create_draft_release
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build Executable
+        run: |
+          pyinstaller --name "kodiak" --onefile --windowed --icon=assets/kodiak.ico --hidden-import pyexcel_io.writers --hidden-import pyexcel_io.readers --hidden-import pyexcel_io.database.importers.django --hidden-import pyexcel_io.database.importers.sqlalchemy --hidden-import pyexcel_io.database.exporters.django --hidden-import pyexcel_io.database.exporters.sqlalchemy --hidden-import pyexcel_xlsx --hidden-import pyexcel_xlsx.xlsxr --hidden-import pyexcel_xlsx.xlsxw --hidden-import pyexcel_xls --hidden-import pyexcel_xls.xlsr --hidden-import pyexcel_xls.xlsw main.py
+        
+      - name: Build Debian package
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install dpkg-dev
+          fakeroot dpkg-deb --build dist kodiak-amd64.deb 
+      
+      - name: Upload Executable
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_draft_release.outputs.upload_url }}
+          asset_path: kodiak-amd64.deb
+          asset_name: kodiak-amd64.deb
+          asset_content_type: application/octet-stream
  
