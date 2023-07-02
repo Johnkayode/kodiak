@@ -5,6 +5,7 @@ lml==0.1.0
 macholib==1.16.2
 openpyxl==3.0.10
 packaging==21.3
+Pillow==10.0.0
 ply==3.11
 pyexcel==0.7.0
 pyexcel-io==0.6.6
