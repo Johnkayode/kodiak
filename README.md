@@ -20,7 +20,7 @@ Install the `.exe`, `.deb` and `.dmg` files for Windows, Linux and Mac OSes resp
 - Copy or download the JSON data.
 
 ## Build/Run
-To run `Kodiak` locally on your machine, first install [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer).  
+To build or run `Kodiak` locally on your machine, first install [Python](https://www.python.org/downloads/).  
 
 Then:
 1. Clone the repository  
